@@ -7,7 +7,13 @@ export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 # shellcheck disable=SC1091
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
-nvm use default >/dev/null 2>&1 || true
-export PATH="$(dirname "$(nvm which current 2>/dev/null || command -v node)"):$PATH"
+# Resolve the nvm `default` Node explicitly and put it first on PATH. We base
+# this on `nvm which default` (not `nvm which current`) so it stays correct even
+# when an older `node` shim is injected at the front of PATH by the base image.
+_ark_node_bin="$(dirname "$(nvm which default 2>/dev/null)" 2>/dev/null)"
+if [ -n "$_ark_node_bin" ] && [ -x "$_ark_node_bin/node" ]; then
+	export PATH="$_ark_node_bin:$PATH"
+fi
+unset _ark_node_bin
 
 corepack enable >/dev/null 2>&1 || true
