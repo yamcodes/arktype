@@ -1,0 +1,10 @@
+{
+	"name": "ArkType",
+	"install": "./.cursor/install.sh",
+	"terminals": [
+		{
+			"name": "docs-dev",
+			"command": "./.cursor/docs-dev.sh"
+		}
+	]
+}
